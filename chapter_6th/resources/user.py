@@ -2,6 +2,7 @@ import sqlite3
 from flask_restful import Resource, reqparse
 from models.user import UserModel
 
+
 class UserRegister(Resource):
     # use parser to validate the input
     parser = reqparse.RequestParser()
@@ -17,14 +18,6 @@ class UserRegister(Resource):
         if UserModel.find_by_username(username):
             return ({'messsage': 'user name "{}" alredy exists'.format(username)}, 400)
 
-
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        user = (username, password)
-        insert_query = "INSERT INTO users (username, password) VALUES (?, ?)"
-        cursor.execute(insert_query, user)
-        connection.commit()
-        connection.close()
-
+        user = UserModel(username, password)
+        user.save_to_db()
         return ({'messsage': 'user name "{}" created'.format(username)}, 201)

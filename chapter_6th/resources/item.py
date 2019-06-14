@@ -1,5 +1,6 @@
 import sqlite3
 from flask_restful import Resource, reqparse
+from flask_jwt import jwt_required
 from models.item import ItemModel
 
 
@@ -12,7 +13,7 @@ class Item(Resource):
         item = ItemModel.find_by_name(name)
         return (item.to_json(), 200) if item else ({'message': 'item not found'}, 404)
     
-    # @jwt_required()
+    @jwt_required()
     def post(self, name):
         # can't create 2 items with the same name
         if ItemModel.find_by_name(name): 
@@ -20,10 +21,10 @@ class Item(Resource):
         
         request_data = self.parser.parse_args()
         item = ItemModel(name, request_data.get('price'))
-        item.insert()
+        item.save_to_db()
         return item.to_json(), 201
 
-    # @jwt_required()
+    @jwt_required()
     def delete(self, name):
         item = ItemModel.find_by_name(name)
         if item:
@@ -32,37 +33,24 @@ class Item(Resource):
         else:
             return ({'message': 'item not found'}, 404)
 
-    # @jwt_required()
+    @jwt_required()
     def put(self, name):
         request_data = self.parser.parse_args()
         price = request_data.get('price')
         item = ItemModel.find_by_name(name)
 
         if item:
-            item.update(price)
+            item.price = price
             return_message = ({'message': 'item has been updated'}, 200)
         else:
             item = ItemModel(name, price)
-            item.insert()
             return_message = ({'message': 'item has been added'}, 200)
 
+        item.save_to_db()
         return return_message
 
 
-class ItemList(Resource): 
-    def get(self): 
+class ItemList(Resource):
+    def get(self):
 
-        con = sqlite3.connect('data.db')
-        cur = con.cursor()
-
-        query = "SELECT * FROM items"
-        results = cur.execute(query)
-        items = []
-        for row in results: 
-            item = {
-                    'name': row[1], 
-                    'price': row[2]
-                }
-            items.append(item)
-        con.close()
-        return {'items': items}
+        return {'items': list(map(lambda x: x.to_json(), ItemModel.query.all()))}
