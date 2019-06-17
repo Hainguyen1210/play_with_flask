@@ -262,7 +262,7 @@ each created item needs to be associated with one existing store
 
 1. `GET` `/items`
 
-list all stores in the DB, along with links to their full info.
+    list all stores in the DB, along with links to their full info.
     
     Request body: `not required`
     
@@ -348,9 +348,9 @@ list all stores in the DB, along with links to their full info.
 
     Header "Authorization": "JWT {{JWT_TOKEN}}" is required
 
-Request body: `not required`
+    Request body: `not required`
 
-Responses:
+    Responses:
 
     `200`
     ```
