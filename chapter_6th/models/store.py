@@ -11,6 +11,9 @@ class StoreModel(db.Model):
     def __init__(self, name):
         self.name = name
 
+    def to_json_simple(self, host_url):
+        return {'name': self.name, 'id': self.id, 'items': "{}stores/{}".format(host_url, self.name)}
+
     def to_json(self):
         return {'name': self.name, 'id': self.id, 'items': list(map(lambda x: x.to_json(), self.items.all()))}
 

@@ -1,7 +1,7 @@
-import sqlite3
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from models.item import ItemModel
+from models.store import StoreModel
 
 
 class Item(Resource):
@@ -25,6 +25,8 @@ class Item(Resource):
         store_id = request_data.get('store_id')
         print("----{}".format(request_data))
         if price and store_id:
+            if not StoreModel.find_by_id(store_id):
+                return ({'messsage': 'store_id is not found.'}, 400)
             item = ItemModel(name, price, store_id)
         else:
             return ({'messsage': 'Item must be defined with its price and store_id'}, 400)
@@ -53,7 +55,7 @@ class Item(Resource):
             return_message = ({'message': 'item has been updated'}, 200)
         else:
             item = ItemModel(name, price, store_id)
-            return_message = ({'message': 'item has been added'}, 200)
+            return_message = ({'message': 'item has been added'}, 201)
 
         item.save_to_db()
         return return_message

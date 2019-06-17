@@ -1,5 +1,4 @@
-import sqlite3
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, request
 from flask_jwt import jwt_required
 from models.store import StoreModel
 
@@ -17,7 +16,7 @@ class Store(Resource):
     def post(self, name):
         # can't create 2 stores with the same name
         if StoreModel.find_by_name(name):
-            return ({'messsage': 'An store with name "{}" alredy exists'.format(name)}, 400)
+            return ({'messsage': 'A store with name "{}" alredy exists'.format(name)}, 400)
         
         store = StoreModel(name)
         store.save_to_db()
@@ -29,11 +28,11 @@ class Store(Resource):
         if store:
             if len(store.items.all()) == 0:
                 store.delete()
-                return ({'message': 'store has been deleted'}, 200)
+                return ({'message': 'store has been deleted.'}, 200)
             else:
-                return ({'message': 'cannot delete store that contains items'}, 400)
+                return ({'message': 'cannot delete store that contains items.'}, 400)
         else:
-            return ({'message': 'store not found'}, 404)
+            return ({'message': 'store not found.'}, 404)
 
     @jwt_required()
     def put(self, name):
@@ -43,10 +42,10 @@ class Store(Resource):
 
         if store:
             store.name = new_name
-            return_message = ({'message': 'store has been updated'}, 200)
+            return_message = ({'message': 'store has been updated.'}, 200)
         else:
             store = StoreModel(name)
-            return_message = ({'message': 'store has been added'}, 200)
+            return_message = ({'message': 'store has been added.'}, 201)
 
         store.save_to_db()
         return return_message
@@ -55,4 +54,4 @@ class Store(Resource):
 class StoreList(Resource):
     def get(self):
 
-        return {'stores': list(map(lambda x: x.to_json(), StoreModel.query.all()))}
+        return {'stores': list(map(lambda x: x.to_json_simple(request.host_url), StoreModel.query.all()))}
