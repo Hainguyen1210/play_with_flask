@@ -8,6 +8,7 @@ class Item(Resource):
     # use parser to validate the input
     parser = reqparse.RequestParser()
     parser.add_argument('price', type=float, required=True, help='this field cannot left blank!')
+    parser.add_argument('store_id', type=int, required=True, help='this field cannot left blank!')
 
     def get(self, name): 
         item = ItemModel.find_by_name(name)
@@ -20,7 +21,13 @@ class Item(Resource):
             return ({'messsage': 'An item with name "{}" alredy exists'.format(name)}, 400)
         
         request_data = self.parser.parse_args()
-        item = ItemModel(name, request_data.get('price'))
+        price = request_data.get('price')
+        store_id = request_data.get('store_id')
+        print("----{}".format(request_data))
+        if price and store_id:
+            item = ItemModel(name, price, store_id)
+        else:
+            return ({'messsage': 'Item must be defined with its price and store_id'}, 400)
         item.save_to_db()
         return item.to_json(), 201
 
@@ -37,13 +44,15 @@ class Item(Resource):
     def put(self, name):
         request_data = self.parser.parse_args()
         price = request_data.get('price')
+        store_id = request_data.get('store_id')
         item = ItemModel.find_by_name(name)
 
         if item:
             item.price = price
+            item.store_id = store_id
             return_message = ({'message': 'item has been updated'}, 200)
         else:
-            item = ItemModel(name, price)
+            item = ItemModel(name, price, store_id)
             return_message = ({'message': 'item has been added'}, 200)
 
         item.save_to_db()

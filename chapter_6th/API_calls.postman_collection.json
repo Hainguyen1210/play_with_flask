@@ -1,0 +1,463 @@
+{
+	"info": {
+		"_postman_id": "34592932-b5fb-40ae-813e-6c04e748cbb0",
+		"name": "REST APIs with Flask and Python",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "/auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5ab57047-1744-426d-9ed7-5c0b4bad597d",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"receivedToken = jsonData.access_token || \"\"; ",
+									"",
+									"pm.environment.set(\"JWT_TOKEN\", receivedToken);",
+									"",
+									"tests['jwt is not empty'] = receivedToken !== \"\";"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"anotherone\", \n\t\"password\": \"haha\"\n}"
+						},
+						"url": {
+							"raw": "{{HOSTNAME}}/auth",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "caaefd9e-781e-444f-916b-4ad532c9d54e",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"user has been created\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"created\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"user exists\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"exist\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"anotherone\", \n\t\"password\": \"haha\"\n}"
+						},
+						"url": {
+							"raw": "{{HOSTNAME}}/register",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "item",
+			"item": [
+				{
+					"name": "/items",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "33ee1748-f6f5-428b-8ffc-49597e3b7192",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOSTNAME}}/items",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"items"
+							]
+						},
+						"description": "get all the items in JSON format"
+					},
+					"response": []
+				},
+				{
+					"name": "/items/<name>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ebda6ba-b380-42b8-985a-5fb3c23aa829",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOSTNAME}}/items/bigger_house",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"items",
+								"bigger_house"
+							]
+						},
+						"description": "this will return one specific item, uniquely indentified by its name. there won't be 2 items with the same name\n"
+					},
+					"response": []
+				},
+				{
+					"name": "/items/<name>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "077174e9-c0ad-4055-bd8c-d1e45b7be3f0",
+								"exec": [
+									"pm.test(\"item created\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"price\": 400,\n\t\"store_id\": 3\n}"
+						},
+						"url": {
+							"raw": "{{HOSTNAME}}/items/bigger_house",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"items",
+								"bigger_house"
+							]
+						},
+						"description": "this will create new item with the name specified in the url, price wil be provided in the body. if the item has been already created, the request will fail"
+					},
+					"response": []
+				},
+				{
+					"name": "/items/<name>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "58f1c400-e939-460b-bb62-9f4d4c6855b5",
+								"exec": [
+									"pm.test(\"item is deleted\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"deleted\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{HOSTNAME}}/items/table",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"items",
+								"table"
+							]
+						},
+						"description": "this will delete the specified item if the item is not exists, it wil failed"
+					},
+					"response": []
+				},
+				{
+					"name": "/items/<name>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c8c0c27-b65a-4d3e-8835-6c86e236b941",
+								"exec": [
+									"pm.test(\"item is updated\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"updated\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"price\": 102,\n\t\"store_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{HOSTNAME}}/items/bike",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"items",
+								"bike"
+							]
+						},
+						"description": "this will modified an existing item, if the item doesn't exist, the new one will be created"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "store",
+			"item": [
+				{
+					"name": "/stores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOSTNAME}}/stores",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stores/<name>",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOSTNAME}}/stores/dos",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"stores",
+								"dos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stores/<name>",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"aha_my_new_stores\"\n}"
+						},
+						"url": {
+							"raw": "{{HOSTNAME}}/stores/cuatro",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"stores",
+								"cuatro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stores/<name>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "58f1c400-e939-460b-bb62-9f4d4c6855b5",
+								"exec": [
+									"pm.test(\"item is deleted\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"deleted\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{HOSTNAME}}/items/table",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"items",
+								"table"
+							]
+						},
+						"description": "this will delete the specified item if the item is not exists, it wil failed"
+					},
+					"response": []
+				},
+				{
+					"name": "/stores/<name>",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"aha_my_new_stores\"\n}"
+						},
+						"url": {
+							"raw": "{{HOSTNAME}}/stores/cuatro",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"stores",
+								"cuatro"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

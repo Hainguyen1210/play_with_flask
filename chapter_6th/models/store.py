@@ -1,27 +1,26 @@
 from db import db
 
 
-class ItemModel(db.Model):
-    __tablename__ = 'items'
+class StoreModel(db.Model):
+    __tablename__ = 'stores'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    price = db.Column(db.Float(precision=2))
+    items = db.relationship('ItemModel', lazy='dynamic')
 
-    store = db.relationship('StoreModel')
-    store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
-
-    def __init__(self, name, price, store_id):
+    def __init__(self, name):
         self.name = name
-        self.price = price
-        self.store_id = store_id
 
     def to_json(self):
-        return {'name': self.name, 'price': self.price, 'store_id': self.store_id}
+        return {'name': self.name, 'id': self.id, 'items': list(map(lambda x: x.to_json(), self.items.all()))}
 
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
     def save_to_db(self):
         db.session.add(self)
