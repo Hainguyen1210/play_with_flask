@@ -172,7 +172,7 @@ store entity which holds items.
 
 3. `POST` `/stores/<name>`
 
-Header "Authorization": "JWT {{JWT_TOKEN}}" is required
+    Header "Authorization": "JWT {{JWT_TOKEN}}" is required
 
     Request body: `not required`
 
@@ -197,7 +197,7 @@ Header "Authorization": "JWT {{JWT_TOKEN}}" is required
 
 4. `DELETE` `/stores/<name>`
 
-Header "Authorization": "JWT {{JWT_TOKEN}}" is required
+    Header "Authorization": "JWT {{JWT_TOKEN}}" is required
 
     Request body: `not required`
 
@@ -228,7 +228,7 @@ Header "Authorization": "JWT {{JWT_TOKEN}}" is required
 
 5. `PUT` `/stores/<name>`
 
-Header "Authorization": "JWT {{JWT_TOKEN}}" is required
+    Header "Authorization": "JWT {{JWT_TOKEN}}" is required
 
     Request body:
 
@@ -346,7 +346,7 @@ list all stores in the DB, along with links to their full info.
 
 4. `DELETE` `/items/<name>`
 
-Header "Authorization": "JWT {{JWT_TOKEN}}" is required
+    Header "Authorization": "JWT {{JWT_TOKEN}}" is required
 
 Request body: `not required`
 
@@ -370,7 +370,7 @@ Responses:
 
 5. `PUT` `/items/<name>`
 
-Header "Authorization": "JWT {{JWT_TOKEN}}" is required
+    Header "Authorization": "JWT {{JWT_TOKEN}}" is required
 
     Request body:
     
