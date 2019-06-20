@@ -199,7 +199,7 @@ User authentication is required when accessing object-modification requests. Thi
     }
     ```
 
-5. `PUT` `/stores/<name>`  
+5. `PUT` `/stores/<store_id>`  
     `authentication required`
 
     Request body:
