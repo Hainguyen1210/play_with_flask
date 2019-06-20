@@ -143,12 +143,12 @@
 					"response": []
 				},
 				{
-					"name": "/items/<name>",
+					"name": "/stores/<int:store_id>/items",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "6ebda6ba-b380-42b8-985a-5fb3c23aa829",
+								"id": "33ee1748-f6f5-428b-8ffc-49597e3b7192",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -162,21 +162,20 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOSTNAME}}/items/bigger_house",
+							"raw": "{{HOSTNAME}}/items",
 							"host": [
 								"{{HOSTNAME}}"
 							],
 							"path": [
-								"items",
-								"bigger_house"
+								"items"
 							]
 						},
-						"description": "this will return one specific item, uniquely indentified by its name. there won't be 2 items with the same name\n"
+						"description": "get all the items in JSON format"
 					},
 					"response": []
 				},
 				{
-					"name": "/items/<name>",
+					"name": "/stores/<int:store_id>/items",
 					"event": [
 						{
 							"listen": "test",
@@ -207,16 +206,17 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"price\": 400,\n\t\"store_id\": 3\n}"
+							"raw": "{\n\t\"name\": \"this is my new item \",\n\t\"price\": 1\n}"
 						},
 						"url": {
-							"raw": "{{HOSTNAME}}/items/bigger_house",
+							"raw": "{{HOSTNAME}}/stores/3/items",
 							"host": [
 								"{{HOSTNAME}}"
 							],
 							"path": [
-								"items",
-								"bigger_house"
+								"stores",
+								"3",
+								"items"
 							]
 						},
 						"description": "this will create new item with the name specified in the url, price wil be provided in the body. if the item has been already created, the request will fail"
@@ -224,7 +224,42 @@
 					"response": []
 				},
 				{
-					"name": "/items/<name>",
+					"name": "/stores/<int:store_id>/items/<int:item_id>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ebda6ba-b380-42b8-985a-5fb3c23aa829",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOSTNAME}}/stores/2/items/2",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"stores",
+								"2",
+								"items",
+								"2"
+							]
+						},
+						"description": "this will return one specific item, uniquely indentified by its name. there won't be 2 items with the same name\n"
+					},
+					"response": []
+				},
+				{
+					"name": "/stores/<int:store_id>/items/<int:item_id>",
 					"event": [
 						{
 							"listen": "test",
@@ -268,7 +303,7 @@
 					"response": []
 				},
 				{
-					"name": "/items/<name>",
+					"name": "/stores/<int:store_id>/items/<int:item_id>",
 					"event": [
 						{
 							"listen": "test",
@@ -338,7 +373,40 @@
 					"response": []
 				},
 				{
-					"name": "/stores/<name>",
+					"name": "/stores",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"my new store\"\n}"
+						},
+						"url": {
+							"raw": "{{HOSTNAME}}/stores",
+							"host": [
+								"{{HOSTNAME}}"
+							],
+							"path": [
+								"stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stores/<int:store_id>",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -356,36 +424,7 @@
 					"response": []
 				},
 				{
-					"name": "/stores/<name>",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\": \"aha_my_new_stores\"\n}"
-						},
-						"url": {
-							"raw": "{{HOSTNAME}}/stores/cuatro",
-							"host": [
-								"{{HOSTNAME}}"
-							],
-							"path": [
-								"stores",
-								"cuatro"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/stores/<name>",
+					"name": "/stores/<int:store_id>",
 					"event": [
 						{
 							"listen": "test",
@@ -410,18 +449,18 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "JWT {{JWT_TOKEN}}",
-								"type": "text"
+								"type": "text",
+								"value": "JWT {{JWT_TOKEN}}"
 							}
 						],
 						"url": {
-							"raw": "{{HOSTNAME}}/items/table",
+							"raw": "{{HOSTNAME}}/store/4",
 							"host": [
 								"{{HOSTNAME}}"
 							],
 							"path": [
-								"items",
-								"table"
+								"store",
+								"4"
 							]
 						},
 						"description": "this will delete the specified item if the item is not exists, it wil failed"
@@ -429,7 +468,7 @@
 					"response": []
 				},
 				{
-					"name": "/stores/<name>",
+					"name": "/stores/<int:store_id>",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -438,20 +477,25 @@
 								"name": "Content-Type",
 								"type": "text",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "JWT {{JWT_TOKEN}}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"aha_my_new_stores\"\n}"
+							"raw": "{\n\t\"new_name\": \"my new store\"\n}"
 						},
 						"url": {
-							"raw": "{{HOSTNAME}}/stores/cuatro",
+							"raw": "{{HOSTNAME}}/stores/6",
 							"host": [
 								"{{HOSTNAME}}"
 							],
 							"path": [
 								"stores",
-								"cuatro"
+								"6"
 							]
 						}
 					},
