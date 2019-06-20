@@ -1,23 +1,29 @@
-import sqlite3
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, inputs
+from werkzeug.security import generate_password_hash
+
 from models.user import UserModel
+from my_utils import make_response_message
 
 
 class UserRegister(Resource):
-    # use parser to validate the input
     parser = reqparse.RequestParser()
-    parser.add_argument('username', type=str, required=True, help='username cannot be blank!')
-    parser.add_argument('password', type=str, required=True, help='password cannot be blank!')
+    parser.add_argument(
+        'username', type=inputs.regex('^\S{4,20}$'), required=True,
+        help='Must be 4-20 non-whitespace characters long', trim=True
+    )
+    parser.add_argument(
+        'password', type=inputs.regex('^.{8,20}$'), required=True,
+        help='Must be 8-20 characters long', trim=True)
 
     def post(self):
         request_data = self.parser.parse_args()
         username = request_data.get('username')
         password = request_data.get('password')
 
-        # check if the username exists
+        # Users cannot have the same name
         if UserModel.find_by_username(username):
-            return ({'messsage': 'user name "{}" alredy exists'.format(username)}, 400)
+            return make_response_message("User name '{}' already exists".format(username), 400)
 
-        user = UserModel(username, password)
+        user = UserModel(username, generate_password_hash(password))
         user.save_to_db()
-        return ({'messsage': 'user name "{}" created'.format(username)}, 201)
+        return make_response_message("User name '{}' created".format(username), 201)

@@ -1,16 +1,17 @@
-import sqlite3
 from db import db
 
 
 class UserModel(db.Model):
-    __tablename__  = 'users'
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80))
-    password = db.Column(db.String(80))
+    USERNAME_LENGTH = 80
+    PASSWORD_HASH_LENGTH = 100
+    username = db.Column(db.String(USERNAME_LENGTH))
+    password_hash = db.Column(db.String(PASSWORD_HASH_LENGTH))
 
-    def __init__(self, username, password):
+    def __init__(self, username, password_hash):
         self.username = username
-        self.password = password
+        self.password_hash = password_hash
 
     def save_to_db(self):
         db.session.add(self)
@@ -22,5 +23,4 @@ class UserModel(db.Model):
 
     @classmethod
     def find_by_id(cls, uid):
-        return cls.query.filter_by(id=uid).first()
-
+        return cls.query.get(uid)
