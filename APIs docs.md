@@ -87,10 +87,9 @@ User authentication is required when accessing object-modification requests. Thi
     
 ---
 ## **store**
-store entity which holds items.
 
-1. `GET` `/stores`
-    list all stores in the DB, along with links to their full info.
+1. `GET` `/stores`  
+    List all stores in the DB, along with links to their full info.
 
     Request body: None
 
@@ -107,8 +106,8 @@ store entity which holds items.
     ]
     ```
 
-2. `GET` `/stores/<int:store_id>`
-    show store's info and all its items
+2. `GET` `/stores/<int:store_id>`  
+    Show store's info and all its items
 
     Request body: None
 
@@ -241,11 +240,9 @@ store entity which holds items.
 ---
 ## **item**
 
-each created item needs to be associated with one existing store
-
 1. `GET` `/items`
 
-    list all items in the DB
+    List all items in the DB
 
     Request body: None
     
@@ -265,7 +262,7 @@ each created item needs to be associated with one existing store
 
 2. `GET` `/stores/<store_id>/items`
 
-    list all items that belong to the store with id <store_id>
+    List all items that belong to the store with id <store_id>
 
     Request body: None
     
