@@ -116,5 +116,4 @@ class AllItems(Resource):
         help="Must be less than 80 characters", trim=True)
 
     def get(self):
-        print(self.post_parser.parse_args()['name'])
         return [item.to_json() for item in ItemModel.query.all()]
